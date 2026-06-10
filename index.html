@@ -169,6 +169,29 @@ kbd {
 .redrule { border: 0; border-top: var(--rule-signal); width: 64px; margin: 0; }
 
 /* ============================================================
+   Boot loader — camera powering on. Hard cuts only.
+   ============================================================ */
+#boot {
+  position: fixed; inset: 0;
+  background: var(--asphalt);
+  z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+}
+#boot[hidden] { display: none; }
+.boot-inner {
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: var(--space-4); min-width: 220px;
+}
+#boot-line { height: 4px; width: 0; background: var(--signal); }
+
+/* hero lines cut in like subtitles switching on */
+#title-screen.anim h1 .hl { animation: sw-cut-in 0.01s steps(1, end) both; }
+#title-screen.anim h1 .hl:nth-child(1) { animation-delay: 0.05s; }
+#title-screen.anim h1 .hl:nth-child(3) { animation-delay: 0.25s; }
+#title-screen.anim h1 .hl:nth-child(5) { animation-delay: 0.45s; }
+@keyframes sw-cut-in { from { visibility: hidden; } to { visibility: visible; } }
+
+/* ============================================================
    Title screen
    ============================================================ */
 #title-screen {
@@ -214,6 +237,9 @@ kbd {
   margin-bottom: var(--space-6);
 }
 .controls-hints { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+@media (hover: none) and (pointer: coarse) {
+  .controls-hints { display: none; } /* no keyboard — the road signs teach the rest */
+}
 #title-screen .foot {
   margin-top: auto;
   padding-top: var(--space-7);
@@ -643,6 +669,20 @@ kbd {
 }
 
 @media (max-width: 520px) {
+  /* landing: minimal, type-led, thumb-first */
+  #title-screen .inner { padding: var(--space-5) var(--space-4) var(--space-6); }
+  #title-screen h1 { font-size: clamp(44px, 12.5vw, 56px); }
+  #title-screen .lede { font-size: var(--text-md); }
+  .controls-row { flex-direction: column; align-items: stretch; }
+  .controls-row .btn { width: 100%; justify-content: center; min-height: 52px; }
+  #title-screen .foot { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+  /* end zone: keep clear of the top HUD on small screens */
+  #end-zone p { font-size: var(--text-sm); margin-bottom: var(--space-3); }
+  #end-zone .quote-stack .caption { font-size: var(--text-md); }
+  #end-zone .quote-stack { margin-bottom: var(--space-4); }
+  #end-zone .actions { margin-bottom: var(--space-3); }
+  #end-zone h2 { margin-bottom: var(--space-2); }
+  #end-zone .redrule { margin-bottom: var(--space-2) !important; }
   #place-meta { display: none; }
   #end-zone .btn { padding: 12px 18px; font-size: var(--text-sm); }
   .chapter h2 { font-size: 32px; }
@@ -657,21 +697,31 @@ kbd {
 </head>
 <body>
 
+<!-- ============ BOOT (camera powering on — ~1s, skippable) ============ -->
+<div id="boot" aria-hidden="true">
+  <div class="boot-inner">
+    <span class="rec-badge"><span class="rec-dot"></span>REC <span id="boot-tc">--:--</span></span>
+    <div id="boot-line"></div>
+    <span class="metaline inverse" id="boot-note" style="font-size: var(--text-xs); visibility: hidden;">One continuous shot</span>
+  </div>
+</div>
+
 <!-- ============ TITLE SCREEN ============ -->
 <div id="title-screen">
   <div class="inner">
     <span class="wordmark">Sam Walks <span class="mark"></span></span>
     <div style="margin-top: var(--space-7);">
       <hr class="redrule" style="margin-bottom: var(--space-4);">
-      <span class="metaline">Lisbon, Portugal · Year six · New walk most weekdays</span>
-      <h1>One walk.<br>One shot.<br>No cuts.</h1>
+      <span class="metaline" id="title-meta">Lisbon, Portugal · Year six · New walk most weekdays</span>
+      <h1><span class="hl">One walk.</span><br><span class="hl">One shot.</span><br><span class="hl">No cuts.</span></h1>
       <p class="lede">
-        I'm Sam. I walk and talk — about living abroad, AI and work, and leaving
-        employment behind. This site works the same way as the videos: it's one
-        continuous walk. You do the walking.
+        I'm Sam. I walk and talk about living abroad, working in AI, and what
+        leaving employment behind actually means. One continuous walk, a couple
+        of minutes — you do the walking.
       </p>
       <div class="controls-row">
         <button class="btn signal" id="start-btn">▶ Start walking</button>
+        <button class="btn ghost" id="jump-to-walks">Jump to a walk →</button>
         <div class="controls-hints">
           <kbd>→ / D</kbd><span class="metaline">walk</span>
           <kbd>Space</kbd><span class="metaline">jump</span>
@@ -1232,6 +1282,61 @@ document.getElementById("back-btn")?.addEventListener("click", () => {
   for (const r of ROCKS) r.fired = false;
   teleport(0);
   showLines(["Right — once more from the top.", "Hold \u2192 and let's walk."]);
+});
+
+/* ---- boot: camera powers on, then hard cut to the title ---- */
+const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
+(function boot() {
+  const b = document.getElementById("boot");
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    b.hidden = true;
+    if (!REDUCED_MOTION) {
+      titleScreen.classList.add("anim");
+      scrambleMeta();
+    }
+  };
+  if (REDUCED_MOTION) { finish(); return; }
+  const tc = document.getElementById("boot-tc");
+  const line = document.getElementById("boot-line");
+  const note = document.getElementById("boot-note");
+  const frames = [
+    [120, () => { tc.textContent = "0:00"; }],
+    [300, () => { tc.textContent = "0:01"; line.style.width = "16px"; }],
+    [480, () => { tc.textContent = "0:02"; line.style.width = "32px"; note.style.visibility = "visible"; }],
+    [660, () => { tc.textContent = "0:03"; line.style.width = "48px"; }],
+    [840, () => { tc.textContent = "0:04"; line.style.width = "64px"; }],
+    [1020, finish],
+  ];
+  const timers = frames.map(([t, fn]) => setTimeout(() => { if (!finished) fn(); }, t));
+  const skip = () => { timers.forEach(clearTimeout); finish(); };
+  b.addEventListener("pointerdown", skip, { once: true });
+  document.addEventListener("keydown", skip, { once: true });
+})();
+
+/* mono meta settles like a timecode locking in — hard character swaps */
+function scrambleMeta() {
+  const elM = document.getElementById("title-meta");
+  if (!elM) return;
+  const final = elM.textContent;
+  const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let step = 0;
+  const iv = setInterval(() => {
+    step++;
+    if (step >= 7) { elM.textContent = final; clearInterval(iv); return; }
+    elM.textContent = final.split("").map((ch, i) =>
+      ch === " " || ch === "\u00B7" || Math.random() < step / 7
+        ? ch
+        : glyphs[Math.floor(Math.random() * glyphs.length)]
+    ).join("");
+  }, 55);
+}
+
+document.getElementById("jump-to-walks")?.addEventListener("click", () => {
+  startGame();
+  openIndex();
 });
 
 function startGame() {
