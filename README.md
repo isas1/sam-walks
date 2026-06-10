@@ -2,6 +2,13 @@
 
 An interactive, game-style site for the channel. The brand is "I'm walking and I'm talking" — so the site **is** a walk. One continuous horizontal road, one shot, no cuts. The visitor does the walking; Sam does the talking.
 
+**Live**: https://sam-walks-site.vercel.app · **Repo**: https://github.com/julesjewels-ai/sam-walks
+Redeploy: `vercel deploy --prod --yes --scope isas1s-projects` (Git pushes do not auto-deploy.)
+
+## Arrival
+
+A ~1s **boot loader** plays on load — camera powering on: blinking ●REC, ticking timecode, the red line growing — then a hard cut to the landing. Tap/keypress skips it; `prefers-reduced-motion` bypasses it entirely. The hero lines cut in like subtitles switching on and the meta line settles with a one-shot timecode scramble. Landing has two CTAs: **▶ Start walking** and **Jump to a walk →** (opens the game with the index dialog up — two taps to any video). Keyboard hint chips show on pointer devices only.
+
 ## Run it
 
 No build, no dependencies. Open directly:
@@ -48,7 +55,11 @@ Implements the **Sam Walks Design System** (handoff bundle from claude.ai/design
 
 ## Why vanilla JS (no game engine)
 
-Phaser/Three.js/PixiJS were considered and rejected on brand grounds: the design system explicitly bans parallax, fades, blur, and decorative motion — "polish is off-brand". A flat, hard-edged DOM side-scroller is the honest version: zero dependencies, instant load, runs from `file://`, fully keyboard-accessible, respects `prefers-reduced-motion`.
+Phaser/Three.js/PixiJS were considered and rejected on brand grounds: the design system explicitly bans parallax, fades, blur, and decorative motion — "polish is off-brand". A flat, hard-edged DOM side-scroller is the honest version: zero dependencies, instant load, runs from `file://`, fully keyboard-accessible, respects `prefers-reduced-motion`. MagicUI-style components (ripple, gradient text, pulsating buttons, etc.) were reviewed and rejected for the same reason; the boot loader and text reveals are rebuilt in brand language — hard cuts via `steps()`, the red line as the only progress motif.
+
+## Performance
+
+~55KB HTML, photos lazy-loaded (640px JPEGs), fonts via `preconnect` + `<link>` (non-blocking, `font-display: swap`), no JS libraries. SEO/social: og + twitter cards, canonical, inline SVG favicon, `<noscript>` fallback with direct video links. Security headers in `vercel.json`.
 
 ## Mobile-first + accessibility
 
