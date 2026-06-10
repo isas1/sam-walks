@@ -7,7 +7,11 @@ Redeploy: `vercel deploy --prod --yes --scope isas1s-projects` (Git pushes do no
 
 ## Arrival
 
-A ~1s **boot loader** plays on load — camera powering on: blinking ●REC, ticking timecode, the red line growing — then a hard cut to the landing. Tap/keypress skips it; `prefers-reduced-motion` bypasses it entirely. The hero lines cut in like subtitles switching on and the meta line settles with a one-shot timecode scramble. Landing has two CTAs: **▶ Start walking** and **Jump to a walk →** (opens the game with the index dialog up — two taps to any video). Keyboard hint chips show on pointer devices only.
+A ~1s **boot loader** plays on load — camera powering on: blinking ●REC, ticking timecode, the red line growing — then a hard cut to the landing. Tap/keypress skips it; `prefers-reduced-motion` bypasses it entirely.
+
+The landing — **"the road remembers"** — stands on the game's own dirt road: same ground band, same horizon, pixel-identical at the cut into gameplay. Three hero lines cut in like subtitles, eleven words of support copy in caption capsules, and one CTA: **● START WALKING**, an asphalt capsule on the road whose blinking red record dot is the page's only red element and only moving thing. No instructions anywhere.
+
+The page answers touch: above the horizon, drags kick up flat dust squares that settle in stepped cuts; on the road, they stamp boot prints that **persist** — and walk into the game with you, lying at metre zero when Sam sets off. The `TC` readout top-right only rolls while your finger is down: the camera records you walking. First touch earns a one-shot `SUBJECT: YOU` stamp.
 
 ## Run it
 
