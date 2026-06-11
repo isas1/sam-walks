@@ -352,6 +352,7 @@ a { color: var(--link); text-decoration-thickness: 2px; text-underline-offset: 3
   padding: 7px 14px; border-radius: var(--radius-capsule);
   white-space: nowrap;
   display: none;
+  cursor: pointer;
 }
 #watch-hint.on { display: block; }
 
@@ -1296,6 +1297,11 @@ for (const [id, key] of [["t-left", "left"], ["t-right", "right"]]) {
 }
 /* some touch browsers don't match the hover/pointer media query */
 if (navigator.maxTouchPoints > 0) document.getElementById("touch-controls").style.display = "flex";
+
+/* watch hint is tappable on touch devices */
+watchHint.addEventListener("click", () => {
+  if (activeStop && !activeStop.comingSoon) window.open(activeStop.url, "_blank", "noopener");
+});
 
 /* scrub to seek */
 function seekFromPointer(e) {
