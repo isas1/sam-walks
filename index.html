@@ -454,6 +454,17 @@ a { color: var(--link); text-decoration-thickness: 2px; text-underline-offset: 3
 }
 .chapter .metaline { display: block; margin-bottom: var(--space-2); }
 
+/* coming-soon card — not yet live */
+.video-card.coming-soon { opacity: 0.6; cursor: default; pointer-events: none; }
+.video-card.coming-soon .metaline { color: var(--signal); }
+
+.index-soon {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  letter-spacing: var(--mono-tracking); text-transform: uppercase;
+  color: var(--ink-4); white-space: nowrap;
+  padding: 12px 16px; line-height: 1;
+}
+
 /* video stop = VideoCard on a post */
 /* billboard height — clears Sam (88px tall) walking underneath */
 .stop { bottom: calc(var(--ground-h) + 116px); width: 200px; }
@@ -800,7 +811,7 @@ a { color: var(--link); text-decoration-thickness: 2px; text-underline-offset: 3
   </div>
 
   <div id="hud-top">
-    <span class="rec-badge"><span class="rec-dot"></span>REC <span id="timecode">0:00 / 8:24</span></span>
+    <span class="rec-badge"><span class="rec-dot"></span>REC <span id="timecode">0:00 / 10:39</span></span>
     <div id="hud-right">
       <span class="metaline" id="place-meta" style="background: var(--white); padding: 7px 12px; border: 1px solid var(--border-soft); border-radius: var(--radius-capsule); font-size: var(--text-xs); line-height: 1;">EP.000 · LISBON · ONE SHOT</span>
       <button id="index-btn" aria-label="Open the walk index" title="Press L — jump straight to any walk">Index</button>
@@ -852,26 +863,36 @@ a { color: var(--link); text-decoration-thickness: 2px; text-underline-offset: 3
    Data — real published walks
    ============================================================ */
 const WORLD_LEN = 9200;
-const WALK_SECONDS = 504; /* 2:23 + 2:37 + 3:24 — the channel so far */
+const WALK_SECONDS = 639; /* 2:15 + 2:23 + 2:37 + 3:24 — the channel so far */
 
+/* Flip comingSoon to false as each video goes live — urls are already real. */
 const STOPS = [
+  {
+    x: 750, ep: "EP.000", place: "Caparica", dur: "2:15",
+    title: "I'm 39 and I've taken a plunge into the unknown",
+    img: "assets/photos/walk-plunge-00.jpg",
+    url: "https://youtu.be/gWP3Mln3WyU",
+  },
   {
     x: 1900, ep: "EP.001", place: "Lisbon", dur: "2:23",
     title: "AI does more for me every month. So why am I more tired?",
     img: "assets/photos/walk-fields-01.jpg",
     url: "https://youtu.be/FAbBtXXbToQ",
+    comingSoon: true, soon: "11 JUN",
   },
   {
     x: 4400, ep: "EP.002", place: "Lisbon", dur: "2:37",
     title: "I'm 39 and I've stopped working for other people",
     img: "assets/photos/walk-road-02.jpg",
     url: "https://youtu.be/RKPg3u4UHjI",
+    comingSoon: true, soon: "12 JUN",
   },
   {
     x: 6900, ep: "EP.003", place: "Lisbon", dur: "3:24",
     title: "What working in AI abroad is actually like",
     img: "assets/photos/walk-truck-03.jpg",
     url: "https://youtu.be/m4VSpYm4u-E",
+    comingSoon: true, soon: "13 JUN",
   },
 ];
 
@@ -891,7 +912,7 @@ const ROCKS = [
 
 /* Monologue — lines lifted from the real walks, Sam's voice */
 const EVENTS = [
-  { at: 420,  lines: ["This whole site is one walk. One shot. No cuts.", "Three walks ahead — INDEX jumps straight to them."] },
+  { at: 420,  lines: ["This whole site is one walk. One shot. No cuts.", "Four walks ahead — the first one's live now."] },
   { at: 1450, lines: ["Now, the first thing — AI and work.", "The AI keeps doing more for me. My nervous system disagrees."] },
   { at: 2700, question: {
       prompt: "How long are you spending in front of the computer?",
@@ -951,7 +972,7 @@ for (const r of ROCKS) {
   world.appendChild(rockEl);
 }
 {
-  const sign = el("div", "road-sign", { left: "880px" });
+  const sign = el("div", "road-sign", { left: "980px" });
   sign.innerHTML = '<span class="sign-cap">↑ jump the rocks</span><div class="sign-post"></div>';
   world.appendChild(sign);
 }
@@ -965,12 +986,16 @@ for (const c of CHAPTERS) {
 /* video stops */
 const stopNodes = STOPS.map((s) => {
   const wrap = el("div", "stop", { left: (s.x - 100) + "px" });
+  const tag = s.comingSoon ? "div" : "a";
+  const attrs = s.comingSoon
+    ? 'class="video-card coming-soon"'
+    : 'class="video-card" href="' + s.url + '" target="_blank" rel="noopener" aria-label="Watch on YouTube: ' + s.title.replace(/"/g, "&quot;") + ' (' + s.dur + ')"';
   wrap.innerHTML =
-    '<a class="video-card" href="' + s.url + '" target="_blank" rel="noopener" aria-label="Watch on YouTube: ' + s.title.replace(/"/g, "&quot;") + ' (' + s.dur + ')">' +
+    '<' + tag + ' ' + attrs + '>' +
       '<div class="thumb"><img loading="lazy" src="' + s.img + '" alt="' + s.title.replace(/"/g, "&quot;") + '">' +
         '<span class="dur">' + s.dur + '</span><span class="strip"></span></div>' +
-      '<div class="body"><span class="metaline">' + s.ep + " · " + s.place + '</span>' +
-        '<span class="title">' + s.title + "</span></div></a>" +
+      '<div class="body"><span class="metaline">' + s.ep + " · " + s.place + (s.comingSoon ? ' · LIVE ' + s.soon : '') + '</span>' +
+        '<span class="title">' + s.title + "</span></div></" + tag + ">" +
     '<div class="post"></div>';
   world.appendChild(wrap);
   return wrap;
@@ -1014,14 +1039,20 @@ for (const s of STOPS) {
     row.innerHTML = '<span class="ep">' + s.ep + '</span><span class="t">' + s.title +
       '</span><span class="place">' + s.place + '</span><span class="dur">' + s.dur + "</span>";
     row.addEventListener("click", () => { closeIndex(); teleport(s.x - 380); });
-    const watch = el("a", "index-watch");
-    watch.href = s.url;
-    watch.target = "_blank";
-    watch.rel = "noopener";
-    watch.setAttribute("aria-label", "Watch on YouTube: " + s.title + " (opens in new tab)");
-    watch.textContent = "\u25B6 watch";
     wrap.appendChild(row);
-    wrap.appendChild(watch);
+    if (s.comingSoon) {
+      const soon = el("span", "index-soon");
+      soon.textContent = "live " + s.soon.toLowerCase();
+      wrap.appendChild(soon);
+    } else {
+      const watch = el("a", "index-watch");
+      watch.href = s.url;
+      watch.target = "_blank";
+      watch.rel = "noopener";
+      watch.setAttribute("aria-label", "Watch on YouTube: " + s.title + " (opens in new tab)");
+      watch.textContent = "\u25B6 watch";
+      wrap.appendChild(watch);
+    }
     list.appendChild(wrap);
   }
 }
@@ -1085,8 +1116,8 @@ function render() {
     if (active) near = s;
   });
   activeStop = near;
-  watchHint.classList.toggle("on", !!near);
-  placeMeta.textContent = (near ? near.ep : "EP.000") + " · LISBON · ONE SHOT";
+  watchHint.classList.toggle("on", !!near && !near.comingSoon);
+  placeMeta.textContent = (near ? near.ep + " · " + near.place.toUpperCase() : "EP.000 · CAPARICA") + " · ONE SHOT";
 }
 
 let activeStop = null;
@@ -1231,8 +1262,7 @@ document.addEventListener("keydown", (ev) => {
     case "ArrowLeft": case "a": case "A": keys.left = true; ev.preventDefault(); break;
     case " ": case "ArrowUp": case "w": case "W": doJump(); ev.preventDefault(); break;
     case "Enter":
-      /* if the card link itself is focused, let native activation handle it */
-      if (activeStop && !document.activeElement?.closest?.(".video-card")) {
+      if (activeStop && !activeStop.comingSoon && !document.activeElement?.closest?.(".video-card")) {
         window.open(activeStop.url, "_blank", "noopener");
       }
       break;
@@ -1571,9 +1601,10 @@ window.addEventListener("resize", () => { if (started) render(); });
   <div style="max-width:680px;margin:0 auto;padding:24px;font-family:Archivo,system-ui,sans-serif;">
     <h2>The walks</h2>
     <ul>
-      <li><a href="https://youtu.be/FAbBtXXbToQ">AI does more for me every month. So why am I more tired? (2:23)</a></li>
-      <li><a href="https://youtu.be/RKPg3u4UHjI">I'm 39 and I've stopped working for other people (2:37)</a></li>
-      <li><a href="https://youtu.be/m4VSpYm4u-E">What working in AI abroad is actually like (3:24)</a></li>
+      <li><a href="https://youtu.be/gWP3Mln3WyU">I'm 39 and I've taken a plunge into the unknown (2:15)</a></li>
+      <li>AI does more for me every month. So why am I more tired? (2:23) — live 11 June</li>
+      <li>I'm 39 and I've stopped working for other people (2:37) — live 12 June</li>
+      <li>What working in AI abroad is actually like (3:24) — live 13 June</li>
     </ul>
     <p><a href="https://www.youtube.com/@sam.isaacs">Subscribe on YouTube</a></p>
   </div>
