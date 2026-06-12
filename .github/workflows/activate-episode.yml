@@ -1,0 +1,46 @@
+name: Activate daily episode
+
+on:
+  schedule:
+    # Weekdays: 17:15 UTC (30 min after 17:44 Lisbon / 16:44 UTC)
+    - cron: '15 17 * * 1-5'
+    # Weekends: 12:00 UTC (32 min after 12:28 Lisbon / 11:28 UTC)
+    - cron: '0 12 * * 0,6'
+  workflow_dispatch: # allow manual trigger from GitHub Actions tab
+
+jobs:
+  activate-episode:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check and activate today's episode
+        run: |
+          DAY=$(date -u +"%d" | sed 's/^0//')
+          MON=$(date -u +"%b" | tr '[:lower:]' '[:upper:]')
+          TODAY="${DAY} ${MON}"
+          echo "Checking for episode scheduled on: $TODAY"
+
+          if grep -q "comingSoon: true, soon: \"${TODAY}\"" index.html; then
+            sed -i "/comingSoon: true, soon: \"${TODAY}\",/d" index.html
+            echo "Activated episode for ${TODAY}"
+          else
+            echo "No episode scheduled for today (${TODAY}) — nothing to do"
+          fi
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes to commit"
+          else
+            DAY=$(date -u +"%d" | sed 's/^0//')
+            MON=$(date -u +"%b" | tr '[:lower:]' '[:upper:]')
+            git add index.html
+            git commit -m "Activate episode for ${DAY} ${MON}"
+            git push origin main
+          fi
