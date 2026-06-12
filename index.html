@@ -352,6 +352,7 @@ a { color: var(--link); text-decoration-thickness: 2px; text-underline-offset: 3
   padding: 7px 14px; border-radius: var(--radius-capsule);
   white-space: nowrap;
   display: none;
+  cursor: pointer;
 }
 #watch-hint.on { display: block; }
 
@@ -879,14 +880,12 @@ const STOPS = [
     title: "AI does more for me every month. So why am I more tired?",
     img: "assets/photos/walk-fields-01.jpg",
     url: "https://youtu.be/FAbBtXXbToQ",
-    comingSoon: true, soon: "11 JUN",
   },
   {
     x: 4400, ep: "EP.002", place: "Lisbon", dur: "2:37",
     title: "I'm 39 and I've stopped working for other people",
     img: "assets/photos/walk-road-02.jpg",
     url: "https://youtu.be/RKPg3u4UHjI",
-    comingSoon: true, soon: "12 JUN",
   },
   {
     x: 6900, ep: "EP.003", place: "Lisbon", dur: "3:24",
@@ -1296,6 +1295,11 @@ for (const [id, key] of [["t-left", "left"], ["t-right", "right"]]) {
 }
 /* some touch browsers don't match the hover/pointer media query */
 if (navigator.maxTouchPoints > 0) document.getElementById("touch-controls").style.display = "flex";
+
+/* watch hint is tappable on touch devices */
+watchHint.addEventListener("click", () => {
+  if (activeStop && !activeStop.comingSoon) window.open(activeStop.url, "_blank", "noopener");
+});
 
 /* scrub to seek */
 function seekFromPointer(e) {
