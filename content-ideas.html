@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Sam Walks — content review &amp; 3 ideas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --asphalt:#181511; --ink-2:#3a352d; --paper:#efe9dd; --card:#fbf8f1;
+    --red:#e0312e; --field:#6b6f3a; --dust:#d8cfba; --line:#181511;
+    --shadow:4px 4px 0 var(--asphalt);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--paper); color:var(--asphalt);
+    font:400 17px/1.5 'Archivo',system-ui,sans-serif;
+    padding:0 18px 80px; max-width:920px; margin:0 auto;
+  }
+  .mono{font-family:'Space Mono',ui-monospace,monospace}
+  h1,h2,h3{font-family:'Archivo Black','Archivo',sans-serif; line-height:1.05; letter-spacing:-.01em}
+  a{color:var(--red)}
+
+  /* header */
+  header{padding:30px 0 14px; border-bottom:2px solid var(--line)}
+  .rec{display:inline-flex; align-items:center; gap:8px; font:700 12px/1 'Space Mono',monospace; letter-spacing:.12em; text-transform:uppercase}
+  .dot{width:10px;height:10px;background:var(--red);border-radius:50%;display:inline-block;animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.dot{animation:none}}
+  h1{font-size:clamp(28px,7vw,46px); margin:.35em 0 .1em}
+  .sub{font:400 15px/1.4 'Space Mono',monospace; color:var(--ink-2)}
+
+  /* section */
+  section{margin:34px 0}
+  .kicker{font:700 12px/1 'Space Mono',monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--red); margin-bottom:8px}
+  h2{font-size:clamp(20px,4.5vw,28px); margin:0 0 14px; padding-bottom:8px; border-bottom:2px solid var(--line)}
+  h3{font-size:19px; margin:0 0 6px}
+
+  /* two-col working/not */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media (max-width:640px){.grid2{grid-template-columns:1fr}}
+  .panel{background:var(--card); border:2px solid var(--line); box-shadow:var(--shadow); padding:16px 18px}
+  .panel.good{border-left:8px solid var(--field)}
+  .panel.bad{border-left:8px solid var(--red)}
+  .panel h3{display:flex; align-items:center; gap:8px}
+  ul{margin:.4em 0 0; padding-left:1.1em}
+  li{margin:.5em 0}
+  li b{font-weight:700}
+  .stat{font-family:'Space Mono',monospace; background:var(--dust); padding:1px 5px; border:1px solid var(--line); white-space:nowrap; font-size:.86em}
+
+  /* fix checklist */
+  .checklist{background:var(--asphalt); color:var(--card); border:2px solid var(--line); box-shadow:var(--shadow); padding:18px 20px}
+  .checklist h2{color:var(--card); border-color:var(--card)}
+  .checklist li{list-style:none; position:relative; padding-left:30px}
+  .checklist ul{padding-left:0}
+  .checklist li::before{content:'☐'; position:absolute; left:0; color:var(--red); font-size:20px; top:-2px}
+  .checklist .stat{background:#2a261f; color:var(--card); border-color:#4a443a}
+
+  /* idea cards */
+  .idea{background:var(--card); border:2px solid var(--line); box-shadow:var(--shadow); padding:0; margin:22px 0; overflow:hidden}
+  .idea-head{background:var(--asphalt); color:var(--card); padding:14px 18px; display:flex; flex-wrap:wrap; align-items:baseline; gap:10px}
+  .pill{font:700 11px/1 'Space Mono',monospace; letter-spacing:.1em; text-transform:uppercase; background:var(--red); color:#fff; padding:5px 8px}
+  .idea-head .n{font:700 13px/1 'Space Mono',monospace; color:var(--dust)}
+  .idea-head h3{color:var(--card); font-size:20px; flex-basis:100%; margin-top:4px}
+  .idea-body{padding:16px 18px}
+  .lbl{font:700 11px/1 'Space Mono',monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--red); display:block; margin:16px 0 6px}
+  .lbl:first-child{margin-top:0}
+  .hookline{background:var(--dust); border:2px solid var(--line); padding:10px 12px; font-size:16px; font-style:italic}
+  .titles{margin:0; padding-left:1.1em}
+  .titles li{margin:.35em 0; font-weight:700}
+  table.beats{width:100%; border-collapse:collapse; font-size:14.5px}
+  table.beats td{border:1px solid var(--line); padding:7px 9px; vertical-align:top}
+  table.beats td:first-child{font-family:'Space Mono',monospace; white-space:nowrap; width:74px; background:var(--dust); font-size:12.5px}
+  .why{background:#f0ead9; border-left:6px solid var(--field); padding:10px 12px; font-size:14.5px; margin-top:14px}
+  .why b{font-family:'Space Mono',monospace; text-transform:uppercase; font-size:11px; letter-spacing:.1em; color:var(--field); display:block; margin-bottom:3px}
+
+  /* editable */
+  [contenteditable]{outline:none}
+  .notes{min-height:54px; background:#fff; border:2px dashed var(--ink-2); padding:9px 11px; margin-top:6px; font-size:15px; color:var(--asphalt)}
+  .notes:empty::before{content:attr(data-ph); color:#9a9382; font-style:italic}
+  .notes:focus{border-style:solid; border-color:var(--red)}
+
+  footer{margin-top:46px; padding-top:16px; border-top:2px solid var(--line); font:400 13px/1.55 'Space Mono',monospace; color:var(--ink-2)}
+  footer b{color:var(--asphalt)}
+  .tip{font-size:12.5px; color:var(--ink-2); font-family:'Space Mono',monospace; margin:6px 0 0}
+  @media print{.dot{animation:none} body{padding:0} .idea,.panel,.checklist{box-shadow:none; break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="rec"><span class="dot"></span>REC · CONTENT REVIEW</span>
+  <h1>What's working, what's not — and 3 walks to shoot next</h1>
+  <p class="sub">I'm walking and I'm talking · @sam.isaacs · 4 episodes live · review dated 28 Jun 2026</p>
+  <p class="tip">Everything in a dashed box is editable — click and type your own version straight in here, then we'll tighten it together.</p>
+</header>
+
+<!-- ============ THE CHANNEL SO FAR ============ -->
+<section>
+  <div class="kicker">The channel so far</div>
+  <h2>Your four published walks</h2>
+  <div class="panel">
+    <table class="beats" style="font-size:14px">
+      <tr><td>EP.000</td><td><b>I'm 39 and I've taken a plunge into the unknown</b> — Caparica · 2:15 · pillar: Own Path</td></tr>
+      <tr><td>EP.001</td><td><b>AI does more for me every month. So why am I more tired?</b> — Lisbon · 2:23 · pillar: AI &amp; Work</td></tr>
+      <tr><td>EP.002</td><td><b>I'm 39 and I've stopped working for other people</b> — Lisbon · 2:37 · pillar: Own Path</td></tr>
+      <tr><td>EP.003</td><td><b>What working in AI abroad is actually like</b> — Lisbon · 3:24 · pillar: Life Abroad</td></tr>
+    </table>
+    <p class="tip" style="margin-top:10px">Three pillars are in play: <b>AI &amp; Work</b>, <b>Own Path</b>, <b>Life Abroad</b>. One idea below feeds each.</p>
+  </div>
+</section>
+
+<!-- ============ WORKING / NOT WORKING ============ -->
+<section>
+  <div class="kicker">The read</div>
+  <h2>What's working vs. what's holding you back</h2>
+  <div class="grid2">
+    <div class="panel good">
+      <h3>✓ Working — keep doing</h3>
+      <ul>
+        <li><b>Your titles are the hook.</b> "I'm 39 and I've stopped working for other people" is a curiosity gap + identity stamp + relatability in one line. This is genuinely your strongest asset.</li>
+        <li><b>Tight runtimes (2–3.5 min).</b> Bang in the sweet spot — short videos should aim for <span class="stat">65–75% retention</span> and that's far more reachable at 2 min than 12.</li>
+        <li><b>One-shot, unpolished, walking.</b> 2025 data is clear: raw, candid content now <i>out-performs</i> heavily-produced video on trust and completion. "The walk is the production value" is on the right side of the trend.</li>
+        <li><b>A real, narrow POV.</b> Anti-hustle, midlife, AI-but-tired. That's a lane, not a topic. Your persona "David, 39, time-poor" feels each of these in the title.</li>
+        <li><b>Contrast hooks land for you.</b> Your own notes flag a remake that hit <span class="stat">60% engagement</span> — tension/contrast openers are proven on this account.</li>
+      </ul>
+    </div>
+    <div class="panel bad">
+      <h3>✕ Not working / at risk</h3>
+      <ul>
+        <li><b>The first 3 seconds of footage must cash the title's cheque.</b> <span class="stat">33%</span> of viewers leave in the first 30s and <span class="stat">55%+</span> inside the first minute. A great title + a slow "hey guys, so today…" open is where walk-and-talks bleed out.</li>
+        <li><b>Runtime is creeping (2:15 → 3:24).</b> Fine <i>if</i> one story earns it — but longer needs a stronger mid. Protect the 2:00 mark with an open loop.</li>
+        <li><b>Title pattern fatigue.</b> "I'm 39 and I've…" is used twice already. The format works — but vary it before the audience pattern-matches and scrolls.</li>
+        <li><b>Sound-off viewers.</b> ~<span class="stat">80%</span> watch muted at first. Big burned-in captions aren't optional — they're the difference between a scroll and a stop.</li>
+        <li><b>No serial loop yet.</b> Your own strategy doc says "end each post with a teaser, like Netflix." The videos don't visibly close on a question + "next walk" hook — that's free retention you're leaving on the table.</li>
+        <li><b>Cadence.</b> Four videos in. The single biggest lever right now isn't cleverness — it's the next ten walks, shipped regularly.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHOOT-TODAY CHECKLIST ============ -->
+<section>
+  <div class="checklist">
+    <div class="kicker" style="color:var(--red)">Tape this to your phone</div>
+    <h2>6 rules for the walks you shoot today</h2>
+    <ul>
+      <li><b>Open ON the tension.</b> First spoken sentence = the promise in the title. No intro, no logo, no "hey guys". <span class="stat">first 30s decides it</span></li>
+      <li><b>Start one open loop and don't close it till the end.</b> Pose the question in the first 10s; pay it off in the last 15s. <span class="stat">hooked-by-15s ≈ 65% to 3-min</span></li>
+      <li><b>Burn in big captions.</b> Assume muted. <span class="stat">~80% watch silent</span></li>
+      <li><b>Keep momentum — no dead air.</b> Every silent/static beat is a scroll. Keep walking, keep talking.</li>
+      <li><b>End on a question + a "next walk" teaser.</b> Ask one thing in the comments; tease tomorrow's walk.</li>
+      <li><b>Vary the title shape.</b> Rotate: confession / number / counter-intuitive claim / "what nobody tells you".</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ THE THREE IDEAS ============ -->
+<section>
+  <div class="kicker">Shoot these next</div>
+  <h2>Three content ideas — one per pillar</h2>
+  <p class="tip">Each follows your own template: <b>Hook → Build → Turn/Contrast → Reflection → CTA + teaser</b>. Timecodes are a target, not a cage.</p>
+
+  <!-- IDEA 1 -->
+  <article class="idea">
+    <div class="idea-head">
+      <span class="pill">AI &amp; Work</span><span class="n">IDEA 01</span>
+      <h3>I gave AI my whole job for a week. Here's the part it couldn't do.</h3>
+    </div>
+    <div class="idea-body">
+      <span class="lbl">Why this one</span>
+      <p style="margin:0">A concrete experiment built on your best-tested theme (EP.001: "AI does more… so why am I more tired?"). The experiment <i>is</i> the open loop — "what broke?" — which carries the whole walk.</p>
+
+      <span class="lbl">Title options (pick / edit)</span>
+      <ul class="titles">
+        <li>I gave AI my whole job for a week. This is what broke.</li>
+        <li>AI now does 80% of my work. The other 20% is the only part that matters.</li>
+        <li>The more AI does, the less I'm needed. So I tested it.</li>
+      </ul>
+      <div class="notes" contenteditable="true" data-ph="Your title…"></div>
+
+      <span class="lbl">The hook — say it already walking, 0–3s</span>
+      <div class="hookline">"By the time I finish this walk, AI will have done a full day's work for me. And I still can't switch off. Let me show you why."</div>
+
+      <span class="lbl">Structure</span>
+      <table class="beats">
+        <tr><td>0–3s</td><td><b>Cold open / hook.</b> The line above. No intro card, no "hey guys".</td></tr>
+        <tr><td>3–20s</td><td><b>Stakes.</b> The experiment + the real fear: becoming optional in your own work.</td></tr>
+        <tr><td>20s–1:30</td><td><b>Build.</b> 2–3 concrete things AI did this week. One genuinely impressive. One that quietly failed.</td></tr>
+        <tr><td>1:30–2:20</td><td><b>The turn / contrast.</b> The part it couldn't do = the human part (judgement, taste, the awkward call). The relief.</td></tr>
+        <tr><td>2:20–2:50</td><td><b>Reflection.</b> What it means for a 39-year-old who refuses to "hustle".</td></tr>
+        <tr><td>2:50–3:00</td><td><b>CTA + teaser.</b> "Tell me the one task you'd never hand over. Next walk: I quit the thing AI was best at."</td></tr>
+      </table>
+
+      <div class="why"><b>Grounded in</b>Extends your highest-tension theme into a watch-me experiment. Open-loop intros ("what broke?") are exactly what holds the <span class="stat">65%-to-3-min</span> cohort — and the payoff structure protects the 2:00 mid-drop.</div>
+
+      <span class="lbl">Your version / notes</span>
+      <div class="notes" contenteditable="true" data-ph="Riff here — the real task you'd hand to AI, what actually broke this week…"></div>
+    </div>
+  </article>
+
+  <!-- IDEA 2 -->
+  <article class="idea">
+    <div class="idea-head">
+      <span class="pill">Own Path</span><span class="n">IDEA 02</span>
+      <h3>I earn less than I did at 29. I've never felt richer.</h3>
+    </div>
+    <div class="idea-body">
+      <span class="lbl">Why this one</span>
+      <p style="margin:0">A counter-intuitive money confession — straight at "David, 39: money-rich, time-poor". Validated lane (EP.002: "stopped working for other people") but a fresher title shape than "I'm 39 and I've…".</p>
+
+      <span class="lbl">Title options (pick / edit)</span>
+      <ul class="titles">
+        <li>I make less money than I did at 29. I've never felt richer.</li>
+        <li>I took a 40% pay cut to walk to work. Worth every cent.</li>
+        <li>Nobody warns you that "success" can feel like a cage.</li>
+      </ul>
+      <div class="notes" contenteditable="true" data-ph="Your title…"></div>
+
+      <span class="lbl">The hook — 0–3s</span>
+      <div class="hookline">"I earn less now than I did ten years ago — and I would never go back. Walk with me, I'll explain."</div>
+
+      <span class="lbl">Structure</span>
+      <table class="beats">
+        <tr><td>0–3s</td><td><b>Hook.</b> The money confession. The contrast is the whole pitch.</td></tr>
+        <tr><td>3–25s</td><td><b>The old life.</b> One specific, sensory detail of the "cage" — the calendar, the commute, the Sunday dread.</td></tr>
+        <tr><td>25s–1:15</td><td><b>The turning point.</b> The exact moment you decided. The doubts you had (age, money, what people would think).</td></tr>
+        <tr><td>1:15–2:00</td><td><b>The honest cost.</b> Don't sell it — name what you actually lost. This is what earns trust.</td></tr>
+        <tr><td>2:00–2:40</td><td><b>The reframe.</b> What "rich" means now — time, walks, control.</td></tr>
+        <tr><td>2:40–2:55</td><td><b>CTA + teaser.</b> "What would you trade a pay rise for? Next walk: the number that finally made me quit."</td></tr>
+      </table>
+
+      <div class="why"><b>Grounded in</b>Counter-intuitive money claim = a strong curiosity gap; midlife relatability hits your core persona directly. Naming the real cost is the candour that 2025 data says out-performs polished positivity.</div>
+
+      <span class="lbl">Your version / notes</span>
+      <div class="notes" contenteditable="true" data-ph="The real turning-point moment, the actual cost, what 'rich' means to you now…"></div>
+    </div>
+  </article>
+
+  <!-- IDEA 3 -->
+  <article class="idea">
+    <div class="idea-head">
+      <span class="pill">Life Abroad</span><span class="n">IDEA 03</span>
+      <h3>What nobody tells you about moving abroad at 39.</h3>
+    </div>
+    <div class="idea-body">
+      <span class="lbl">Why this one</span>
+      <p style="margin:0">Broadens the "Life Abroad" pillar past tech (EP.003 was "working in AI abroad") into the emotional, universal side — reachable for non-tech viewers. Built around <i>one real Lisbon moment</i>, so the walk itself carries the story.</p>
+
+      <span class="lbl">Title options (pick / edit)</span>
+      <ul class="titles">
+        <li>What nobody tells you about moving abroad at 39.</li>
+        <li>The loneliest part of moving abroad isn't what you think.</li>
+        <li>I moved to Lisbon for the weather. I stayed for this.</li>
+      </ul>
+      <div class="notes" contenteditable="true" data-ph="Your title…"></div>
+
+      <span class="lbl">The hook — 0–3s</span>
+      <div class="hookline">"Three years in Lisbon, and the thing I love most is the thing I almost left over."</div>
+
+      <span class="lbl">Structure</span>
+      <table class="beats">
+        <tr><td>0–3s</td><td><b>Hook.</b> The contradiction. Then start walking toward the actual place it's about.</td></tr>
+        <tr><td>3–30s</td><td><b>The scene.</b> Show the real moment/street/ritual — footage integration. Let the place do work.</td></tr>
+        <tr><td>30s–1:20</td><td><b>Expectation vs reality.</b> What you thought moving abroad would be. What it actually was.</td></tr>
+        <tr><td>1:20–2:10</td><td><b>The low point.</b> The loneliness nobody posts about. Honest, specific.</td></tr>
+        <tr><td>2:10–2:50</td><td><b>The turn + lesson.</b> What changed it — and the thing you'd tell anyone tempted to go.</td></tr>
+        <tr><td>2:50–3:05</td><td><b>CTA + teaser.</b> "Where would you go if you could? Next walk: the one thing I'd pack differently."</td></tr>
+      </table>
+
+      <div class="why"><b>Grounded in</b>Candid, place-led storytelling is exactly the "behind-the-scenes / candid beats out-perform polished" pattern. "What nobody tells you" is a proven curiosity frame, and a single concrete scene gives the muted-viewer something to watch while you talk.</div>
+
+      <span class="lbl">Your version / notes</span>
+      <div class="notes" contenteditable="true" data-ph="Which Lisbon moment? The real low point, the thing that turned it…"></div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ METHOD ============ -->
+<footer>
+  <p><b>How this was put together —</b> grounded on what I could actually reach, and honest about what I couldn't.</p>
+  <p><b>Used:</b> your 4 live episodes (titles, runtimes, pillars from the Sam Walks site); your Notion — audience personas, the serial/episodic strategy doc, your video-idea pipeline &amp; structure template, and the "60% engagement" remake note; external 2025–26 retention research.</p>
+  <p><b>Couldn't reach:</b> YouTube Studio numbers (real per-video retention, views, traffic sources, CTR) — the channel page blocks direct fetch and I have no Studio access. The "what's working" read is therefore pattern- and benchmark-based, not your actual retention curves. <b>If you export a YouTube Analytics CSV (or drop it in Drive), I can redo this against your real numbers.</b></p>
+  <p><b>Research sources:</b> Retention Rabbit (2025 State of YouTube Retention), Humble&amp;Brag &amp; SocialRails retention benchmarks, HubSpot 2026 short-form data, 1of10 hook guide, OpusClip retention graphs.</p>
+</footer>
+
+</body>
+</html>
